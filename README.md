@@ -2,8 +2,8 @@
 ФИО: Коробок Сергей Васильевич\
 Когорта № 6\
 Курс: fullstack-developer\
-Адрес репозитория: https://github.com/korvintaG/bad-server\
-Готовый сайт будет выставлен на: https://korvintag.nomorepartiesco.ru/\
+Адрес репозитория: https://github.com/korvintaG/bad-server  
+Готовый сайт будет выставлен на: https://korvintag.nomorepartiesco.ru/  
 
 ## Подготовка к работе
 1. Склонировать репозиторий
