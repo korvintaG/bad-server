@@ -13,7 +13,7 @@ export enum Role {
     Admin = 'admin',
 }
 
-export interface IUser extends Document {
+export interface IUser extends Document<Types.ObjectId> {
     name: string
     email: string
     password: string
