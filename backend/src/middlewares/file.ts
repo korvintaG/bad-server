@@ -2,7 +2,7 @@ import { Request, Express } from 'express'
 import multer, { FileFilterCallback } from 'multer'
 import { join, extname } from 'path'
 import { faker } from '@faker-js/faker'
-import {MAX_FILE_SIZE} from '../config'
+import {MAX_FILE_SIZE, UPLOAD_FILE_TYPES} from '../config'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -33,20 +33,12 @@ const storage = multer.diskStorage({
     },
 })
 
-const types = [
-    'image/png',
-    'image/jpg',
-    'image/jpeg',
-    'image/gif',
-    'image/svg+xml',
-]
-
 const fileFilter = (
     _req: Request,
     file: Express.Multer.File,
     cb: FileFilterCallback
 ) => {
-    if (!types.includes(file.mimetype)) {
+    if (!UPLOAD_FILE_TYPES.includes(file.mimetype)) {
         return cb(null, false)
     }
     return cb(null, true)
