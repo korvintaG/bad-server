@@ -3,7 +3,7 @@
 Когорта № 6\
 Курс: fullstack-developer\
 Адрес репозитория: https://github.com/korvintaG/bad-server  
-Готовый сайт будет выставлен на: https://korvintag.nomorepartiesco.ru/  
+Готовый сайт будет выставлен на: http://korvintag.nomorepartiesco.ru/  
 
 ## Подготовка к работе
 1. Склонировать репозиторий
