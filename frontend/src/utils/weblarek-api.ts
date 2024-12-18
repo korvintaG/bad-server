@@ -32,15 +32,21 @@ export type ApiListResponse<Type> = {
 
 class Api {
     private readonly baseUrl: string
-    protected options: RequestInit
+    protected token = ''
+    protected options: RequestInit = {}
 
     constructor(baseUrl: string, options: RequestInit = {}) {
         this.baseUrl = baseUrl
-        this.options = {
-            headers: {
-                ...((options.headers as object) ?? {}),
-            },
-        }
+        fetch(`${this.baseUrl}/csrf-token`, { credentials: 'include' })
+            .then((data) => data.json())
+            .then((token) => {
+                this.token = token.csrfToken
+                this.options = {
+                    headers: {
+                        ...((options.headers as object) ?? {}),
+                    },
+                }
+            })
     }
 
     protected handleResponse<T>(response: Response): Promise<T> {
@@ -153,7 +159,9 @@ export class WebLarekAPI extends Api implements IWebLarekAPI {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${getCookie('accessToken')}`,
+                'x-csrf-token': this.token ?? '',
             },
+            credentials: 'include',
         }).then((data: IOrderResult) => data)
     }
 
@@ -167,7 +175,9 @@ export class WebLarekAPI extends Api implements IWebLarekAPI {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${getCookie('accessToken')}`,
+                'x-csrf-token': this.token ?? '',
             },
+            credentials: 'include',
         })
     }
 
@@ -306,7 +316,9 @@ export class WebLarekAPI extends Api implements IWebLarekAPI {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${getCookie('accessToken')}`,
+                'x-csrf-token': this.token ?? '',
             },
+            credentials: 'include',
         }).then((data: IProduct) => ({
             ...data,
             image: {
@@ -329,14 +341,19 @@ export class WebLarekAPI extends Api implements IWebLarekAPI {
         }))
     }
 
-    updateProduct = (data: Partial<Omit<IProduct, '_id'>>, id: string) => {
+    updateProduct = async (
+        data: Partial<Omit<IProduct, '_id'>>,
+        id: string
+    ) => {
         return this.requestWithRefresh<IProduct>(`/product/${id}`, {
             method: 'PATCH',
             body: JSON.stringify(data),
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${getCookie('accessToken')}`,
+                'x-csrf-token': this.token ?? '',
             },
+            credentials: 'include',
         }).then((data: IProduct) => ({
             ...data,
             image: {
@@ -351,7 +368,9 @@ export class WebLarekAPI extends Api implements IWebLarekAPI {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${getCookie('accessToken')}`,
+                'x-csrf-token': this.token ?? '',
             },
+            credentials: 'include',
         })
     }
 }

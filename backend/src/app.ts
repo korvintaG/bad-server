@@ -4,30 +4,31 @@ import cors from 'cors'
 import 'dotenv/config'
 import express, { json, urlencoded } from 'express'
 import mongoose from 'mongoose'
+import mongoSanitize from 'express-mongo-sanitize'
 import path from 'path'
-import { DB_ADDRESS } from './config'
 import errorHandler from './middlewares/error-handler'
 import serveStatic from './middlewares/serverStatic'
 import { normalizeLimit, checkQueryOnObject } from './middlewares/request-query'
 import routes from './routes'
 import { limiter } from './middlewares/rate-limit'
-import {ORIGIN_ALLOW, PORT} from './config'
-
-//const { PORT = 3000 } = process.env
+import {
+    DB_ADDRESS,
+    ORIGIN_ALLOW,
+    PORT,
+    MAX_BODY_SIZE,
+    COOKIES_SECRET,
+} from './config'
 
 const app = express()
-app.use(limiter);
-app.use(cookieParser())
-app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }));
-// app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(cookieParser(COOKIES_SECRET))
+app.use(limiter)
+app.use(json({ limit: MAX_BODY_SIZE }))
+app.use(cors({ origin: ORIGIN_ALLOW, credentials: true }))
 app.use(serveStatic(path.join(__dirname, 'public')))
-
 app.use(urlencoded({ extended: true }))
-app.use(json())
-
-app.use(checkQueryOnObject);
-app.use(normalizeLimit);
+app.use(checkQueryOnObject)
+app.use(mongoSanitize())
+app.use(normalizeLimit)
 app.use(routes)
 app.use(errors())
 app.use(errorHandler)
