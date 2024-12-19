@@ -31,11 +31,10 @@ services:
       context: backend
     env_file:
       - backend/.env
-    volumes:
-      - ./backend/src:/app/src
-      - public:/app/src/public
     ports:
       - 3000:3000
+    volumes:
+      - public:/usr/src/app/dist/public
     networks:
       - internal
     depends_on:
@@ -69,6 +68,8 @@ volumes:
 networks:
   internet:
     name: internet
+    driver: bridge
   internal:
     name: internal
+    driver: bridge
     internal: true
