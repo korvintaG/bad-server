@@ -17,7 +17,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
-      - db:/data/db
+      - mdb:/data/db
     ports:
       - 27017:27017
     networks:
@@ -56,15 +56,19 @@ services:
       - backend
     networks:
       - internal
+      - internet
 
 volumes:
   frontend:
     name: frontend
   public:
     name: public
-  db:
-    name: db
+  mdb:
+    name: mdb
 
 networks:
+  internet:
+    name: internet
   internal:
     name: internal
+    internal: true
