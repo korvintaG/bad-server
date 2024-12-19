@@ -1,5 +1,7 @@
 services:
   frontend:
+    image: frontend
+    container_name: frontend
     build:
       context: frontend
     env_file:
@@ -8,35 +10,39 @@ services:
       - frontend:/app/frontend/dist
 
   mongo:
-    image: mongo
+    image: mongo:4.4.29
+    container_name: mongo_4_4_29
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
-      - db:/data/db
+      - mdb:/data/db
     ports:
       - 27017:27017
     networks:
       - internal
 
   backend:
+    image: backend
     restart: always
+    container_name: backend
     build:
       context: backend
     env_file:
       - backend/.env
-    volumes:
-      - ./backend/src:/app/src
-      - public:/app/src/public
     ports:
       - 3000:3000
+    volumes:
+      - public:/usr/src/app/dist/public
     networks:
       - internal
     depends_on:
       - mongo
 
   server:
+    image: server
+    container_name: nginx
     build:
       context: nginx
     ports:
@@ -49,11 +55,21 @@ services:
       - backend
     networks:
       - internal
+      - internet
 
 volumes:
   frontend:
+    name: frontend
   public:
-  db:
+    name: public
+  mdb:
+    name: mdb
 
 networks:
+  internet:
+    name: internet
+    driver: bridge
   internal:
+    name: internal
+    driver: bridge
+    internal: true
